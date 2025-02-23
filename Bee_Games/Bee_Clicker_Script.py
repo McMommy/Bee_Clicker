@@ -8,7 +8,7 @@ bee = 0
 honey = 0
 bees_honey = 0
 command = ""
-
+bees_working = True
 
 
 
@@ -19,40 +19,42 @@ def StartGame():
 
 
 def honey_production():
-    global honey
-    global command
-    global bees_honey
-    while command != "exit":
+    global honey, bees_honey, bees_working
+    while bees_working:
         bees_honey += 1 # (additional_honey) * honey_multiplier}} bee_honey is var name
         time.sleep(1)
 
 
+def harvest_honey():
+    global honey, bees_honey
+    print(f"harvesting {bees_honey} honey from beehive")
+    honey += bees_honey
+    bees_honey = 0
+
+
 def sell_honey():
-    global honey
+    pass
 
 
 
 def actions():
-    global honey
-    global bees_honey
+    global honey, bees_honey, bees_working
     command = ""
     while command != "exit":
         command = input("")
         if command == "harvest":
-            print(f"harvesting {bees_honey} honey from beehive")
-            honey += bees_honey
-            bees_honey = 0
+            harvest_honey()
             print(f"you now have {honey} jars of honey")
-        elif input == "sell":
+        elif command == "sell":
             sell_honey()
         elif command == "exit":
             print("Leaving The Farm!")
-
+            bees_working = False
 
 
 
 #Threads
-passive_honey = threading.Thread(target=honey_production)
+passive_honey = threading.Thread(target=honey_production, daemon=True)
 
 
 
