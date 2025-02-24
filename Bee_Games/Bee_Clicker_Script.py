@@ -23,8 +23,12 @@ class Apiary:
         #setting up the ui
         self.setup_ui()
 
-        # Start Honey Production **after** UI is initialized
+
         self.start_honey_production()
+
+
+        self.update_bee_collection()
+
 
     def setup_ui(self):
         """ Creates all UI elements. """
@@ -37,6 +41,9 @@ class Apiary:
         self.money_label = tk.Label(self.root, text="Money: 0", font=("Arial", 12))
         self.money_label.pack()
 
+        self.bees_honey_label = tk.Label(self.root, text="Bees Collecting: 0", font=("Arial", 12))
+        self.bees_honey_label.pack()
+
         self.harvest_button = tk.Button(self.root, text="Harvest Honey", command=self.harvest_honey)
         self.harvest_button.pack()
 
@@ -45,6 +52,9 @@ class Apiary:
 
         self.buy_hive_button = tk.Button(self.root, text="Buy Beehive ($400)", command=self.add_beehive)
         self.buy_hive_button.pack()
+
+        self.buy_5_hive_button = tk.Button(self.root, text="Buy 5 Beehives ($2000)", command=self.add_5_beehives)
+        self.buy_5_hive_button.pack()
 
         self.exit_button = tk.Button(self.root, text="Exit", command=self.exit_game)
         self.exit_button.pack()
@@ -63,9 +73,16 @@ class Apiary:
             time.sleep(1)
 
 
+    def update_bee_collection(self):
+        self.bees_honey_label.config(text=f"Bees Collecting: {self.bees_honey}")
+        self.honey_label.config(text=f"Honey: {self.honey}")
+        self.money_label.config(text=f"Money: {self.money}")  
+
+        if self.bees_working:
+            self.root.after(1000, self.update_bee_collection)
+
     def harvest_honey(self):
         self.honey += self.bees_honey
-        messagebox.showinfo("Harvest", f"You harvested {self.bees_honey} honey!")
         self.bees_honey = 0
         self.update_labels()
 
@@ -74,10 +91,13 @@ class Apiary:
         if self.money >= 400:
             self.money -= 400
             self.additional_honey += 1
-            messagebox.showinfo("Upgrade", "You purchased another hive! More honey is produced now.")
-            self.update_labels()
-        else:
-            messagebox.showwarning("Upgrade", "Not enough money! You need $400.")
+        self.update_labels()
+
+
+    def add_5_beehives(self):
+        if self.money >= 2000:
+            self.money -= 2000
+            self.additional_honey += 5
         self.update_labels()
 
 
@@ -85,48 +105,20 @@ class Apiary:
         if self.honey >0:
             money_from_selling = self.honey * 13
             self.money += money_from_selling
-            messagebox.showinfo("Sell", f"You sold {self.honey} honey jars for ${money_from_selling}.")
             self.honey = 0
-            self.update_labels()
-        else:
-            messagebox.showwarning("Sell", "You have no honey to sell!")    
+        self.update_labels()
 
 
     def update_labels(self):
         self.honey_label.config(text=f"Honey: {self.honey}")
         self.money_label.config(text=f"Money: {self.money}")
+        self.bees_honey_label.config(text=f"Bees Collecting: {self.bees_honey}")
 
 
     def exit_game(self):
         self.bees_working = False
         self.root.destroy()
 
-
-    #def inventory(self):
-        #print (f"Honey: {self.honey}\nMoney: {self.money}")
-
-
-    #def actions(self):
-    #    command = ""
-    #    print("In this world, you own a apaiary and farm honey to sell to your customers. Upgrade your farm and become a millionaire.")
-    #    print("Actions:(harvest)(sell)(buy)(inv)(exit)")
-    #    while command != "exit":
-    #        command = input()
-    #        if command == "harvest":
-    #            self.harvest_honey()
-    #            print(f"you now have {self.honey} jars of honey")
-    #        elif command == "sell":
-    #            self.sell_honey()
-    #        elif command == "buy":
-    #            self.add_beehive()
-    #        elif command == "inv":
-    #            self.inventory()
-    #        elif command == "exit":
-    #            print("Leaving The Farm!")
-    #            self.bees_working = False
-    #            break
-    #        else:
-    #            print("TF you saying!")
 
 
 def StartGame():
