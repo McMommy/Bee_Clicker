@@ -4,8 +4,8 @@ import time
 import threading # use threading to make honey production happen in the background until harvest is called ||||| threading.Join() waits for the thread to be done before going on.
 import random
 
-bee = 0
 honey = 0
+money = 0
 bees_honey = 0
 command = ""
 bees_working = True
@@ -25,6 +25,7 @@ def honey_production():
         time.sleep(1)
 
 
+
 def harvest_honey():
     global honey, bees_honey
     print(f"harvesting {bees_honey} honey from beehive")
@@ -32,8 +33,18 @@ def harvest_honey():
     bees_honey = 0
 
 
+
 def sell_honey():
-    pass
+    global honey, bees_honey, money
+    money = honey * 13
+    print(f"you sold {honey} honey jars for {money} dollars")
+    honey = 0
+
+
+
+def inventory():
+    global honey, bees_honey, money
+    print (f"Honey: {honey}\nMoney: {money}")
 
 
 
@@ -47,9 +58,12 @@ def actions():
             print(f"you now have {honey} jars of honey")
         elif command == "sell":
             sell_honey()
+        elif command == "inv":
+            inventory()
         elif command == "exit":
             print("Leaving The Farm!")
             bees_working = False
+            break
 
 
 
